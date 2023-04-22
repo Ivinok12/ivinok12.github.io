@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Idle Game</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <h1 id="realmHeader">Cultivation Realm: Body Refinement</h1>
+    <div id="resources">
+      <div id="qi">
+        <span>Qi:</span> <span id="qiAmount">0</span>
+      </div>
+      <div id="spiritStones">
+        <span>Spirit Stones:</span> <span id="spiritStonesAmount">0</span>
+      </div>
+    </div>
+    <div class="stats-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Stat</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Qi per second</td>
+              <td id="qi-per-sec">100</td>
+            </tr>
+            <tr>
+              <td>Qi needed for breakthrough</td>
+              <td id="qi-needed">1000</td>
+            </tr>
+            <tr>
+              <td>Qi per click</td>
+              <td id="qi-per-click">10</td>
+            </tr>
+            <tr>
+              <td>Spirit Stone per click</td>
+              <td id="ss-per-click">1</td>
+            </tr>
+            <tr>
+              <td>Spirit Stones per second</td>
+              <td id="ss-per-sec">5</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+    <div id="actions">
+        <ul id="buttonList">
+            <li><button id="cultivateQi">Cultivate Qi</button></li>
+            <li><button id="gatherSpiritStones">Gather Spirit Stones</button></li>
+            <li><button id="breakthrough">Breakthrough</button></li>
+            <li><a href="shop.html"><button id="shopBtn">Shop</button></a></li>
+        </ul>
+    </div>
+    <div id="messages">
+        <ul id="messageList"></ul>
+      </div>      
+      <div id="shop-menu">
+        <!-- Add your shop items here -->
+      </div>
+      
+    <script src="script.js"></script>
+  </body>
+</html>

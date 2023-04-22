@@ -1,0 +1,121 @@
+#resources {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  #qi {
+    margin-bottom: 10px;
+  }
+  
+  #qi span:first-child {
+    margin-right: 5px;
+  }
+  
+  #spiritStones span:first-child {
+    margin-right: 5px;
+  }
+  
+  #actions {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    border: 2px solid black;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  #cultivateQi {
+    background-color: darkblue;
+    color: white;
+  }
+  
+  #gatherSpiritStones {
+    background-color: lightblue;
+    color: black;
+  }
+  #messages {
+    margin-top: 1em;
+    height: 200px;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
+  #messages ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  #messages li {
+    font-size: 1.2em;
+    line-height: 1.5em;
+  }
+
+  .stats-table {
+    position: fixed;
+    top: 100px;
+    right: 0;
+    padding: 3px;
+    background-color: white;
+    border: 1px solid black;
+    font-family: Arial, sans-serif;
+    margin-left: auto;
+    margin-right: 40px;
+  }
+  
+  .stats-table table {
+    border-collapse: collapse;
+  }
+  
+  .stats-table th,
+  .stats-table td {
+    padding: 8px;
+    border: 1px solid black;
+  }
+  
+  .stats-table th {
+    text-align: center;
+    font-weight: bold;
+  }
+
+  #realmHeader {
+    text-align: center;
+  }
+  #buttonList {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+  
+  #buttonList li {
+    margin: 10px 0;
+  }
+  
+  #shopMenu {
+    display: none;
+    position: absolute;
+    top: 35px;
+    left: 0;
+  }
+  
+  #shop {
+    margin-left: 20px;
+  }
+  
+  
+  
