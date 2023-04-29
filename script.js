@@ -1,19 +1,27 @@
 //Declaring Variables
 //Qi Variables
-let qi = 0;
-let qiPerClick = 1;
-let qiPerSecond = 0;
-let qiThreshold = 100;
-let qiPerClickBreakthrough = 2; //Changes how much QiPerClick is multiplied when breaking through
-let baseQi = 1; // Changes what the Qi is reset to when breaking through
-//Spirit Stone Variables
-let spiritStones = 0;
-let spiritStoneGain = 1; //How many you get per button click
-let ssPerSecond = 0; //Spirit Stones per second
-//Breakthrough and Variables
-let breakthroughTriggered = false;
-let realmIndex = 0;
-let qiThresholdMulti = 3; //Multiplies qiThreshold when breaking through
+let player = {
+  name: "player",
+  qi: 0,
+  qiPerClick: 1,
+  qiPerSecond: 0,
+  qiThreshold: 100,
+  qiPerClickBreakthrough: 2,
+  baseQi: 1,
+  spiritStones: 0,
+  spiritStoneGain: 1,
+  ssPerSecond: 0,
+  breakthroughTriggered: false,
+  realmIndex: 0,
+  qiThresholdMulti: 3,
+  sgaPrice: 25,
+  sgaMulti: 1.2, //Simple gathering array multiplier
+  sgaOwned: 0, //Simple gathering array
+  mPrice: 50,
+  mPriceMulti: 1.2, //Multiplier for mprice
+  mOwned: 0,
+
+}
 
 //Loads saved values and updates on screen text to reflect that
 window.onload = loadGameState;
@@ -23,6 +31,9 @@ window.onbeforeunload = saveGameState;
 
 //Autosave
 setInterval(saveGameState, 30000)
+
+//Persecond Interval
+setInterval(perSecond, 1000);
 
 // Constant For realms
   const realms = [
@@ -287,36 +298,58 @@ setInterval(saveGameState, 30000)
     "Open Heaven VIII",
     "Open Heaven IX",]
     
-    
-
-
-  
-
+//Main Currency displayer
 const qiDisplay = document.getElementById("qi");
 const spiritStonesDisplay = document.getElementById("spiritStones");
+
+//Main Buttons
 const cultivateQiButton = document.getElementById("cultivateQi");
 const gatherSpiritStonesButton = document.getElementById("gatherSpiritStones");
 const breakthroughButton = document.getElementById("breakthrough");
-const messages = document.getElementById("messages");
-const realmHeader = document.getElementById("realmHeader");
-const sgaPrice = document.getElementById("SGA-Price");
-const sgaBtn = document.getElementById("SGA-Btn");
 
+const messages = document.getElementById("messages");
+
+const realmHeader = document.getElementById("realmHeader");
+//Shop DOM elements
+const sgaPriceTxt = document.getElementById("SGA-Price");
+const sgaBtn = document.getElementById("SGA-Btn");
+const mPriceTxt = document.getElementById("M-Price");
+
+//Stats DOM elements
+const qiPerSecondEl = document.getElementById("qi-per-sec");
+const qiNeededEl = document.getElementById("qi-needed");
+const qiPerClickEl = document.getElementById("qi-per-click");
+const ssPerClickEl = document.getElementById("ss-per-click");
+const ssPerSecondEl = document.getElementById("ss-per-sec");
+
+//Event listeners
 cultivateQiButton.addEventListener("click", cultivateQi);
 gatherSpiritStonesButton.addEventListener("click", gatherSpiritStones);
 breakthroughButton.addEventListener("click", breakthrough);
+sgaBtn.addEventListener("click", buySGA);
 
 //Update functions for text
-function updateQi() {
-    qiDisplay.innerHTML = `Qi: ${qi}`;
+function updateUI() {
+    //Update main currency display
+    spiritStonesDisplay.innerHTML = `Spirit Stones: ${player.spiritStones}`;
+    qiDisplay.innerHTML = `Qi: ${player.qi}`;
+    // Update stats table text
+    qiPerSecondEl.textContent = player.qiPerSecond;
+    qiNeededEl.textContent = player.qiThreshold;
+    qiPerClickEl.textContent = player.qiPerClick;
+    ssPerClickEl.textContent = player.spiritStoneGain;
+    ssPerSecondEl.textContent = player.ssPerSecond;
+    //Update realm header
+    const realm = realms[player.realmIndex];
+    realmHeader.innerHTML = `Current Realm: ${realm}`;
+    //Update Shop DOM elements
+    sgaPriceTxt.innerHTML = player.sgaPrice;
+    mPriceTxt.innerHTML = player.mPrice;
 }
 
-function updateSpiritStones() {
-    spiritStonesDisplay.innerHTML = `Spirit Stones: ${spiritStones}`;
-}
 //Function for breakthrough button
 function updateBreakthroughButton(){
-    if (qi >= qiThreshold) {
+    if (player.qi >= player.qiThreshold) {
       breakthroughButton.style.backgroundColor = "green";
       breakthroughButton.disabled = false;
     } else {
@@ -324,25 +357,7 @@ function updateBreakthroughButton(){
       breakthroughButton.disabled = true;
     }
   }
-  updateBreakthroughButton();
-
-//Function for stats Table
-function updateTable() {
-    // Get the DOM elements for each stat
-    const qiPerSecondEl = document.getElementById("qi-per-sec");
-    const qiNeededEl = document.getElementById("qi-needed");
-    const qiPerClickEl = document.getElementById("qi-per-click");
-    const ssPerClickEl = document.getElementById("ss-per-click");
-    const ssPerSecondEl = document.getElementById("ss-per-sec");
-    
-    // Update the DOM elements with the current stats
-    qiPerSecondEl.textContent = qiPerSecond;
-    qiNeededEl.textContent = qiThreshold;
-    qiPerClickEl.textContent = qiPerClick;
-    ssPerClickEl.textContent = spiritStoneGain;
-    ssPerSecondEl.textContent = ssPerSecond;
-  }
-  
+updateBreakthroughButton();
 
 //MessageBox Function
 function showMessage(message, timeout) {
@@ -357,94 +372,102 @@ function showMessage(message, timeout) {
 
 //Cultivate Button Function
 function cultivateQi() {
-  qi += qiPerClick;
-  updateQi();
+  player.qi += player.qiPerClick;
+  updateUI();
   updateBreakthroughButton()
-  if (qi >= qiThreshold && !breakthroughTriggered) {
-    breakthroughTriggered = true;
+  if (player.qi >= player.qiThreshold) {
+    cultivateQiButton.disabled = true;
     showMessage("You have enough Qi to trigger a breakthrough.", 25000);
   }
 }
 
 //Spirit Stone Function
 function gatherSpiritStones() {
-    spiritStones += 1;
-    updateSpiritStones();
-    updateTable();
+    player.spiritStones += player.spiritStoneGain;
+    updateUI();
   }
   
   //Breakthrough function
   function breakthrough() {
-    if (qi >= qiThreshold) { // makes sure you have the required amount of Qi for breakthrough
-      qiThreshold *= qiThresholdMulti; //Increases Qi Requirement every breakthrough
-      qiPerClick *= qiPerClickBreakthrough; //Increases Qi Increase every breakthrough
-      qi = baseQi;
-      breakthroughTriggered = false;
-      realmIndex++;
+    if (player.qi >= player.qiThreshold) { // makes sure you have the required amount of Qi for breakthrough
+      player.qiThreshold *= player.qiThresholdMulti; //Increases Qi Requirement every breakthrough
+      player.qiPerClick *= player.qiPerClickBreakthrough; //Increases Qi Increase every breakthrough
+      player.qi = player.baseQi;
+      player.breakthroughTriggered = false;
+      player.realmIndex++;
       breakthroughButton.disabled = true;
       breakthroughButton.style.backgroundColor = "lightcoral";
-      updateQi();
-      updateTable();
-      updateRealmHeader();
+      cultivateQiButton.disabled = false;
+      updateUI();
       showMessage("Congratulations! You have achieved a breakthrough! You Qi rate has doubled and your Qi has been condensed", 15000);
     } else {
-      showMessage(`You need at least ${qiThreshold} Qi to trigger a breakthrough. You currently have ${qi} Qi.`, 15000);
+      showMessage(`You need at least ${player.qiThreshold} Qi to trigger a breakthrough. You currently have ${player.qi} Qi.`, 15000);
     }
   }
-//Updates realm Header
-function updateRealmHeader() {
-    const realmHeader = document.getElementById("realmHeader");
-    const realm = realms[realmIndex];
-    realmHeader.innerHTML = `Current Realm: ${realm}`;
-  }
+
+//Save game state to local storage
   function saveGameState() {
-    localStorage.setItem("qi", qi);
-    localStorage.setItem("qiPerSecond", qiPerSecond); 
-    localStorage.setItem("qiPerClick", qiPerClick);
-    localStorage.setItem("qiThreshold", qiThreshold);
-    localStorage.setItem("ssPerSecond", ssPerSecond);
-    localStorage.setItem("spiritStones", spiritStones);
-    localStorage.setItem("ssPerClick", spiritStoneGain);
-    localStorage.setItem("qiPerClickBreakthrough", qiPerClickBreakthrough);
-    localStorage.setItem("baseQi", baseQi);
-    localStorage.setItem("breakthroughTriggered", breakthroughTriggered);
-    localStorage.setItem("realmIndex", realmIndex);
-    localStorage.setItem("qiThresholdMulti", qiThresholdMulti);
+    let playerJSON = JSON.stringify(player);
+    localStorage.setItem("player", playerJSON);
     showMessage("Game Saved", 15000);
   }
-/**
- * Loads the game state from local storage, if it exists.
- * Otherwise, updates the UI with default values.
- */
+
+//Loads the game state from local storage, if it exists. Otherwise, updates the UI with default values.
 function loadGameState() {
-    if (localStorage.getItem("qi") !== null) {
-      // if game state exists in local storage, parse values and update variables
-      qi = parseInt(localStorage.getItem("qi"));
-      qiPerSecond = parseInt(localStorage.getItem("qiPerSecond"));
-      qiPerClick = parseInt(localStorage.getItem("qiPerClick"));
-      qiThreshold = parseInt(localStorage.getItem("qiThreshold"));
-      ssPerSecond = parseInt(localStorage.getItem("ssPerSecond"));
-      spiritStones = parseInt(localStorage.getItem("spiritStones"));
-      spiritStoneGain = parseInt(localStorage.getItem("spiritStoneGain"));
-      qiPerClickBreakthrough = parseInt(localStorage.getItem("qiPerClickBreakthrough"));
-      baseQi = parseInt(localStorage.getItem("baseQi"));
-      breakthroughTriggered = parseInt(localStorage.getItem("breakthroughTriggered"));
-      realmIndex = parseInt(localStorage.getItem("realmIndex"));
-      qiThresholdMulti = parseInt(localStorage.getItem("qiThresholdMulti"));
-  
-      // update UI with loaded game state
-      updateQi();
-      updateRealmHeader();
-      updateSpiritStones();
-      updateTable();
-      updateBreakthroughButton();
-    } else {
-      // if no game state exists, update UI with default values
-      updateQi();
-      updateRealmHeader();
-      updateSpiritStones();
-      updateTable();
-      updateBreakthroughButton();
+    const DEFAULT_STATS = {
+      name: "player",
+      qi: 0,
+      qiPerClick: 1,
+      qiPerSecond: 0,
+      qiThreshold: 100,
+      qiPerClickBreakthrough: 2,
+      baseQi: 1,
+      spiritStones: 0,
+      spiritStoneGain: 1,
+      ssPerSecond: 0,
+      breakthroughTriggered: false,
+      realmIndex: 0,
+      qiThresholdMulti: 3,
+      sgaPrice: 25,
+      sgaMulti: 1.2, //Simple gathering array multiplier
+      sgaOwned: 0, //Simple gathering array
+      mPrice: 50,
+      mPriceMulti: 1.2, //Multiplier for mprice
+      mOwned: 0,
+ 
     }
+    gamestate = JSON.parse(localStorage.getItem("player"));
+    if (gamestate === null) {
+      updateUI();
+      updateBreakthroughButton();
+    } else{
+      for(let stat in DEFAULT_STATS){
+        if(!gamestate.hasOwnProperty(stat)){
+        player[stat] = DEFAULT_STATS[stat];
+        }
+        player = gamestate;
+        updateUI();
+      }
+    }
+    
   }
-  
+function buySGA(){
+  if (player.spiritStones >= player.sgaPrice){
+    player.spiritStones -= player.sgaPrice;
+    player.sgaOwned++;
+    player.sgaPrice *= player.sgaMulti;
+    updateUI();
+  }
+}
+//Main per second function
+function perSecond(){
+  console.log("Function ran");
+  if(player.qi <= player.qiThreshold){
+    player.qiPerSecond = player.sgaOwned;
+    console.log(player.qiPerSecond);
+    player.qi += player.qiPerSecond;
+  }
+  player.spiritStones += player.ssPerSecond;
+  player.ssPerSecond = player.mOwned;
+  updateUI();
+}

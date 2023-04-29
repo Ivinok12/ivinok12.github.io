@@ -18,8 +18,8 @@
   }
   
   #actions {
+    padding-left: 2vw;
     display: flex;
-    justify-content: center;
     text-align: center;
   }
   
@@ -106,16 +106,26 @@
     margin: 10px 0;
   }
   
-  #shopMenu {
-    display: none;
-    position: absolute;
-    top: 35px;
+  .shop {
+    display: flex;
     left: 0;
+    width: 42vw;
+    float: left;
   }
   
-  #shop {
-    margin-left: 20px;
+  .shop table {
+    border-collapse: collapse;
+  }
+
+  .shop th {
+    text-align: center;
+    font-weight: bold;
   }
   
+  .shop th,
+  .shop td {
+    padding: 8px;
+    border: 1px solid black;
+  }
   
   
